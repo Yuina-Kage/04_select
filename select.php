@@ -11,37 +11,23 @@ try {
   exit;
 }
 
-$keyword = $_GET["keyword"];
 $keyword = '%'.$keyword.'%';
 
-if ("REQUEST_METHOD" === "GET") {
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   $keyword = $_GET["keyword"];
-  echo 'キーワードを変数に代入';
-} elseif ($empty === $keyword) {
-  $sql = "selct * from animals";
-  echo '変数[$keyword]は空です';
-} elseif ($empty !== $keyword) {
-  "SELECT * FROM [animls] WHERE [description] LIKE :keyword";
-  echo '変数[$keyword]は空ではありません';
+  $sql = "select * from animals where status = 'notyet'";
+  $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+  $animals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+  //   if ( empty($keyword) ) {
+  //     $sql = "insert into tasks (animals, created_at, updated_at) values (:animals, now(), now())";
+  //   $stmt->bindParam(":animals", $animals);
 
-$sql = "select * from animals";
-
-$stmt = $dbh->prepare($sql);
-
-$stmt->execute();
-
-$animals = $stmt->fetchALL(PDO::FETCH_ASSOC);
-
-foreach ($animals as $animal) {
-  echo $animal['type'] . 'の';
-  echo $animal['classifaction'] . 'ちゃん<br>';
-  echo $animal['description'] . '<br>';
-  echo $animal['birthday'] . '生まれ<br>出身地';
-  echo $animal['birthplace'] . '';
-  echo $animal[''] . '<hr>';
-}
+  // } else {
+  // SELECT * FROM [animls] WHERE [description] LIKE :keyword;
+  
 
 ?>
 
@@ -63,12 +49,18 @@ foreach ($animals as $animal) {
       </label>
       <input type="submit" value="検索">
     </form>
-  foreach ()
+    
+    <?php 
+    foreach ($animals as $animal) 
+    {
+      echo $animal['type'] . 'の' .
+      $animal['classifaction'] . 'ちゃん<br>' . 
+      $animal['description'] . '<br>' . 
+      $animal['birthday'] . ' 生まれ<br>出身地 ' . 
+      $animal['birthplace'] . '' . '<hr>';  
+    }
+    ?>  
   
   </p>
 </body>
 </html>
-
-
-
-

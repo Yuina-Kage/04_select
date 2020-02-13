@@ -11,26 +11,42 @@ try {
   exit;
 }
 
-$keyword = '%'.$keyword.'%';
+// 表示はされるが、これでは検索結果が取得できなかった
+// $keyword = '%'.$keyword.'%';
+
+// if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+//   $keyword = $_GET['keyword'];
+// }
+
+// if  ($keyword == '') {
+//   $sql = "SELECT * FROM animals";
+//   $stmt = $dbh->prepare($sql);
+//   $stmt->execute();
+//   $animals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// } else {
+//   $sql = "SELECT * FROM animals WHERE description LIKE 'keyword%'";
+//   $stmt = $dbh->prepare($sql);
+//   $stmt->bindParam(":keyword", $keyword);
+//   $stmt->execute();
+//   $animals = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   $keyword = $_GET["keyword"];
-  $sql = "select * from animals where status = 'notyet'";
+  if  ($keyword == '') {
+  $sql = "SELECT * FROM animals";
   $stmt = $dbh->prepare($sql);
+} else {
+  $sql2 = "SELECT * FROM animals WHERE description LIKE 'keyword%'";
+  $stmt = $dbh->prepare($sql2);
+  $keyword = '%' . $keyword . '%';
+  $stmt->bindParam(":keyword", $keyword);
+}
   $stmt->execute();
   $animals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
-  //   if ( empty($keyword) ) {
-  //     $sql = "insert into tasks (animals, created_at, updated_at) values (:animals, now(), now())";
-  //   $stmt->bindParam(":animals", $animals);
-
-  // } else {
-  // SELECT * FROM [animls] WHERE [description] LIKE :keyword;
-  
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -41,26 +57,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   <title>ペットショップ</title>
 </head>
 <body>
-  <h1>本日のご紹介ペット！</h1>
+  <h2>本日のご紹介ペット！</h2>
   <p>
     <form action="" method="get">
       <label for="keyword">キーワード:
         <input type="text" name="keyword" placeholder="キーワードの入力">
       </label>
       <input type="submit" value="検索">
-    </form>
-    
+    </form> 
+    <p> 
     <?php 
-    foreach ($animals as $animal) 
-    {
+    foreach ($animals as $animal) {
       echo $animal['type'] . 'の' .
       $animal['classifaction'] . 'ちゃん<br>' . 
       $animal['description'] . '<br>' . 
       $animal['birthday'] . ' 生まれ<br>出身地 ' . 
       $animal['birthplace'] . '' . '<hr>';  
     }
-    ?>  
-  
+    ?>
+    </p>
   </p>
 </body>
 </html>

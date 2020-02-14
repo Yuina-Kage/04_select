@@ -24,7 +24,7 @@ try {
 //   $stmt->execute();
 //   $animals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // } else {
-//   $sql = "SELECT * FROM animals WHERE description LIKE 'keyword%'";
+//   $sql = "SELECT * FROM animals WHERE description LIKE '%keyword%'";
 //   $stmt = $dbh->prepare($sql);
 //   $stmt->bindParam(":keyword", $keyword);
 //   $stmt->execute();
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   $sql = "SELECT * FROM animals";
   $stmt = $dbh->prepare($sql);
 } else {
-  $sql2 = "SELECT * FROM animals WHERE description LIKE 'keyword%'";
+  $sql2 = "SELECT * FROM animals WHERE description LIKE '%$keyword%'";
   $stmt = $dbh->prepare($sql2);
   $keyword = '%' . $keyword . '%';
   $stmt->bindParam(":keyword", $keyword);
@@ -66,15 +66,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       <input type="submit" value="検索">
     </form> 
     <p> 
-    <?php 
-    foreach ($animals as $animal) {
-      echo $animal['type'] . 'の' .
-      $animal['classifaction'] . 'ちゃん<br>' . 
-      $animal['description'] . '<br>' . 
-      $animal['birthday'] . ' 生まれ<br>出身地 ' . 
-      $animal['birthplace'] . '' . '<hr>';  
-    }
-    ?>
+    <?php foreach ($animals as $animal) : ?>
+      <?php echo $animal['type'] . 'の' . 
+            $animal['classifaction'] . 'ちゃん<br>' .
+            $animal['description'] . '<br>' .
+            $animal['birthday'] . ' 生まれ<br>出身地 ' .
+            $animal['birthplace'] . '' . '<hr>' ; ?>
+    <?php endforeach; ?>
     </p>
   </p>
 </body>
